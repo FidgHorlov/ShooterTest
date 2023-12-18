@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using TestShooter.Enemies;
+using UnityEngine;
 
 namespace TestShooter.Weapon
 {
@@ -56,14 +57,15 @@ namespace TestShooter.Weapon
             CurrentGameObject.SetActive(isActive);
         }
 
-        public void Shoot()
+        public void Shoot(Vector3 direction)
         {
             _isBulletShot = true;
             SetActive(true);
-            _currentRigidbody.velocity = CurrentTransform.forward * Speed;
+            _currentRigidbody.velocity = direction * Speed;
             CurrentTransform.parent = null;
+            Invoke(nameof(KillBullet), 5f);
         }
-        
+
         public void BulletReset()
         {
             if (_isBulletShot)
@@ -71,7 +73,13 @@ namespace TestShooter.Weapon
                 return;
             }
             
+            KillBullet();
+        }
+
+        private void KillBullet()
+        {
             _currentRigidbody.velocity = Vector3.zero;
+            _currentRigidbody.angularVelocity = Vector3.zero;
             CurrentTransform.parent = _currentParent;
             CurrentTransform.localPosition = _defaultPosition;
             CurrentGameObject.SetActive(false);
@@ -79,8 +87,11 @@ namespace TestShooter.Weapon
         
         private void EnemyDamage(GameObject enemyGameObject)
         {
-            // getcomponent
-            // damage
+            Enemy enemy =  enemyGameObject.GetComponent<Enemy>();
+            if (enemy != null)
+            {
+                enemy.Damage(Damage);
+            }
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using TestShooter.Player;
 using UnityEngine;
 
 namespace TestShooter.Weapon
@@ -12,6 +11,7 @@ namespace TestShooter.Weapon
         [SerializeField] private Bullet[] _bulletPool;
 
         private GameObject _currentGameObject;
+        private Transform _currentTransform;
         private DateTime _timeFromLastShot;
         private int _bulletCount;
 
@@ -22,6 +22,7 @@ namespace TestShooter.Weapon
         private void Awake()
         {
             InitWeaponSettings();
+            _currentTransform = transform;
             _currentGameObject = gameObject;
 
             foreach (Bullet bullet in _bulletPool)
@@ -45,14 +46,19 @@ namespace TestShooter.Weapon
         
         internal void IncreaseDamage()
         {
-            _bulletDamage *= _bulletDamage;
+            _bulletDamage *= DamageIncrease;
+            SetBulletDamage();
         }
 
         private void InitWeaponSettings()
         {
             _bulletDamage = _weaponSettings.BulletDamage;
             _weaponSpeed = _weaponSettings.WeaponSpeed;
-
+            SetBulletDamage();
+        }
+        
+        private void SetBulletDamage()
+        {
             foreach (Bullet bullet in _bulletPool)
             {
                 bullet.Damage = _bulletDamage;
@@ -66,7 +72,7 @@ namespace TestShooter.Weapon
                 StopShooting();
             }
 
-            _bulletPool[_bulletCount].Shoot();
+            _bulletPool[_bulletCount].Shoot(_currentTransform.forward);
             _bulletCount++;
             _timeFromLastShot = DateTime.Now;
         }

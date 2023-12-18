@@ -16,7 +16,8 @@ namespace TestShooter.PowerUp
             [field: SerializeField] public Vector2 MaxAxis { get; private set; }
         }
         
-        private const float BonusAppearingTime = 2f;
+        private const float BonusAppearingTime = 15f;
+        private const float MaxBonusLiveTime = 10f;
 
         [SerializeField] private Bonus _bonus;
         [SerializeField] private BonusMap _bonusMap;
@@ -55,8 +56,15 @@ namespace TestShooter.PowerUp
         {
             _bonus.TargetLocation = GetTargetLocation();
             _bonus.SetActive(true);
+            Invoke(nameof(HideBonus), MaxBonusLiveTime);
         }
 
+        private void HideBonus()
+        {
+            _bonus.SetActive(false);
+            Invoke(nameof(ShowBonus), GetBonusAppearingSeconds());
+        }
+        
         private void BonusDetectedEventHandler(Bonus.BonusType bonusType, float bonusTime)
         {
             _hud.ShowBonus(bonusType.ToString());
@@ -73,12 +81,12 @@ namespace TestShooter.PowerUp
             }
         }
 
-        private float GetBonusAppearingSeconds() => BonusAppearingTime;
-        
+        private float GetBonusAppearingSeconds() => Random.Range(0, BonusAppearingTime);
+
         private Vector3 GetTargetLocation()
         {
             float x = Random.Range(_bonusMap.MinAxis.x, _bonusMap.MaxAxis.x);
-            float z = Random.Range(_bonusMap.MinAxis.x, _bonusMap.MaxAxis.y);
+            float z = Random.Range(_bonusMap.MinAxis.y, _bonusMap.MaxAxis.y);
             return new Vector3(x, 0f, z);
         }
 

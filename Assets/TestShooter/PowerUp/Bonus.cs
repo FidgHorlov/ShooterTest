@@ -1,13 +1,12 @@
 using System;
 using DG.Tweening;
-using TestShooter.Utilities;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace TestShooter.PowerUp
 {
-
-
+    [RequireComponent(typeof(Collider))]
+    [RequireComponent(typeof(Rigidbody))]
     public class Bonus : MonoBehaviour
     {
         public enum BonusType
@@ -21,28 +20,35 @@ namespace TestShooter.PowerUp
         private const float DetectedBonusMoveTime = 0.75f;
         private const float DetectedBonusScaleTime = 0.25f;
         private const float BonusTime = 4f;
-        
+        private const float AnimationDuration = 5f;
+
+        private const float DefaultBonusPoseY = 1.5f;
+        private const float BonusPoseYMin = 1f;
+
+        private const string PlayerTag = "Player";
+
         private readonly Vector3 DetectedScaleBonus = new Vector3(0.5f, 0.5f, 0.5f);
+        private readonly Vector3 RotationAnimation = new Vector3(0f, 180f, 0f);
 
         public event Action<BonusType, float> DetectedBonusEvent;
 
         [SerializeField] private Transform _powerUpTransform;
-        [SerializeField] private TriggerEventReceiver _triggerReceiver;
 
         private BonusType _bonusType;
         private Vector3 _targetLocation;
         private bool _isActive;
-        
+
         public Vector3 TargetLocation { private get; set; }
 
-        private void OnEnable()
+        private void OnTriggerEnter(Collider otherCollider)
         {
-            _triggerReceiver.TriggerEnterEvent += TriggerReceiverHandler;
-        }
+            if (!otherCollider.CompareTag(PlayerTag))
+            {
+                return;
+            }
 
-        private void OnDisable()
-        {
-            _triggerReceiver.TriggerEnterEvent -= TriggerReceiverHandler;
+            BonusDetectedHide();
+            DetectedBonusEvent?.Invoke(_bonusType, BonusTime);
         }
 
         public void SetActiveImmediately(bool isActive)
@@ -67,52 +73,50 @@ namespace TestShooter.PowerUp
             }
 
             float animationDuration = isActive ? ShowBonusTime : HideBonusTime;
+            float targetPoseY = isActive ? DefaultBonusPoseY : BonusPoseYMin;
 
-            _powerUpTransform.DOKill(_powerUpTransform);
-            _powerUpTransform.DOScale(GetTargetScale(isActive), animationDuration).OnComplete(() =>
-            {
-                if (!isActive)
+            DOTween.Kill(_powerUpTransform);
+
+            Sequence sequence = DOTween.Sequence();
+            sequence
+                .Append(_powerUpTransform.DOMoveY(targetPoseY, animationDuration))
+                .Append(_powerUpTransform.DOScale(GetTargetScale(isActive), animationDuration))
+                .OnComplete(() =>
                 {
-                    _powerUpTransform.gameObject.SetActive(false);
-                }
+                    if (!isActive)
+                    {
+                        _powerUpTransform.gameObject.SetActive(false);
+                    }
+                    else
+                    {
+                        AnimateCylinder();
+                    }
 
-                _isActive = isActive;
-            }).SetId(_powerUpTransform);
-        }
-
-        private void TriggerReceiverHandler()
-        {
-            SetActive(false);
-            DetectedBonusEvent?.Invoke(_bonusType, BonusTime);
+                    _isActive = isActive;
+                })
+                .SetId(_powerUpTransform);
+            sequence.Play();
         }
 
         public void BonusDetectedHide()
         {
-            _powerUpTransform.DOKill(_powerUpTransform);
+            DOTween.Kill(_powerUpTransform);
             Sequence sequence = DOTween.Sequence();
             sequence
-                .Append(_powerUpTransform.DOMoveY(GetDetectedBonusPositionY(), DetectedBonusMoveTime))
+                .Append(_powerUpTransform.DOMoveY(2f, DetectedBonusMoveTime / 4f))
                 .Append(_powerUpTransform.DOScale(DetectedScaleBonus, DetectedBonusScaleTime))
                 .OnComplete(() => SetActiveImmediately(false))
                 .SetId(_powerUpTransform);
             sequence.Play();
         }
 
-        private float GetDetectedBonusPositionY()
+        private void AnimateCylinder()
         {
-            float targetHeight = _powerUpTransform.position.y;
-
-            if (targetHeight == 0)
-            {
-                targetHeight = 1f;
-            }
-
-            return targetHeight * 1.5f;
+            DOTween.Kill(_powerUpTransform);
+            _powerUpTransform.DOLocalRotate(RotationAnimation, AnimationDuration).SetLoops(-1).SetEase(Ease.Linear).SetId(_powerUpTransform);
         }
 
         private Vector3 GetTargetScale(bool isActive) => isActive ? Vector3.one : Vector3.zero;
         private BonusType GetBonusType() => Random.Range(0, 2) % 2 == 0f ? BonusType.MovementBoost : BonusType.DamageBoost;
-
-
     }
 }

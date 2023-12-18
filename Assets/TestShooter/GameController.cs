@@ -1,4 +1,3 @@
-using System;
 using TestShooter.Hud;
 using TestShooter.Player;
 using TestShooter.PowerUp;
