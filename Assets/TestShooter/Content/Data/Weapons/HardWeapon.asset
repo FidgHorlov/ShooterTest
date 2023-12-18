@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b223ab35d9154f66abbb7aa51e6803b7, type: 3}
   m_Name: HardWeapon
   m_EditorClassIdentifier: 
-  <BulletDamage>k__BackingField: 50
+  <BulletDamage>k__BackingField: 125
   <WeaponSpeed>k__BackingField: 1

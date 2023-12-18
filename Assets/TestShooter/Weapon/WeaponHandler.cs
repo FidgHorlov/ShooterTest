@@ -15,5 +15,16 @@ namespace TestShooter.Weapon
             Weapon.SetActive(isActive);
             BackPack.SetActive(!isActive);
         }
+
+        public void Shoot()
+        {
+            Weapon.Shooting();
+        }
+
+        public void IncreaseDamage()
+        {
+            Weapon.IncreaseDamage();
+        }
+        
     }
 }
