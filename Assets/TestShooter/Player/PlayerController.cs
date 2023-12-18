@@ -1,6 +1,6 @@
 using System;
-using TestShooter.Data;
 using TestShooter.Hud;
+using TestShooter.Weapon;
 using UnityEngine;
 
 namespace TestShooter.Player
@@ -17,24 +17,53 @@ namespace TestShooter.Player
     public class PlayerController : MonoBehaviour
     {
         private const float MaxLandDistance = 1.7f;
+        private const float MovementThreshold = 0.1f;
+        private const float BonusIncreaseValue = 1.5f;
+        private const float BonusTime = 3f;
 
+        [SerializeField] private WeaponController _weaponController;
         [SerializeField] private HudController _hud;
         [SerializeField] private Rigidbody _playerRigidbody;
         [SerializeField] private PlayerSettings _playerSettings;
 
+        private PlayerMovement _playerMovement;
         private Transform _playerTransform;
-        private float RotationAxis => Input.GetAxis("Mouse X"); 
         private bool _isJumped;
+        private float _currentSpeed;
+        private float _currentJumpForce;
+        private float _currentJumpFall;
+
+        private float RotationAxis => Input.GetAxis("Mouse X");
 
         private void Awake()
         {
             _playerTransform = transform;
+            _currentSpeed = _playerSettings.Speed;
+            _currentJumpForce = _playerSettings.JumpForce;
+            _currentJumpFall = _playerSettings.FallingForce;
+            _playerMovement = new PlayerMovement();
         }
 
         private void FixedUpdate()
         {
-            PlayerMovement();
-            JumpPolishing();
+            float horizontal = Input.GetAxis("Horizontal");
+            float vertical = Input.GetAxis("Vertical");
+
+            _playerRigidbody.velocity = _playerMovement.GetVelocity(_playerTransform.right * horizontal, _playerTransform.forward * vertical, _currentSpeed);
+            if (Mathf.Abs(horizontal) != 0f || Mathf.Abs(vertical) != 0f)
+            {
+                _hud.SetState(Enums.MovementState.Move);
+            }
+            
+            if (_playerRigidbody.velocity.y >= 0f)
+            {
+                _playerRigidbody.velocity += _playerMovement.JumpPolishingVelocity(_currentJumpFall);
+            }
+
+            if (IsLanded() && _isJumped)
+            {
+                _playerRigidbody.AddForce(Vector3.up * _currentJumpForce, ForceMode.Impulse);
+            } 
         }
 
         private void Update()
@@ -43,27 +72,51 @@ namespace TestShooter.Player
             {
                 _isJumped = true;
             }
-
-            PlayerRotation();
+            
+            float mouseX = RotationAxis * _playerSettings.MouseSensitivity * Time.deltaTime;
+            _playerTransform.Rotate(_playerMovement.GetRotation(mouseX));
         }
 
         private void LateUpdate()
         {
             HudStateWriting();
+            WeaponHandler();
         }
 
-        private bool IsValueInLimit(float value) => Mathf.Abs(value) > 0.1f;
+        public void BoostDamage()
+        {
+            
+        }
+
+        public void BoostMovement()
+        {
+            _currentJumpForce *= BonusIncreaseValue;
+            _currentSpeed *= BonusIncreaseValue;
+            _currentJumpFall *= BonusIncreaseValue;
+            Invoke(nameof(RestoreDefaultMovement), BonusTime);
+        }
+
+        private void RestoreDefaultMovement()
+        {
+            _currentJumpForce /= BonusIncreaseValue;
+            _currentSpeed /= BonusIncreaseValue;
+            _currentJumpFall /= BonusIncreaseValue;
+        }
+        
+        private bool IsLanded() => Physics.Raycast(_playerTransform.position, Vector3.down, MaxLandDistance);
+
+        private bool IsValueInLimit(float value) => Mathf.Abs(value) > MovementThreshold;
 
         private void HudStateWriting()
         {
             Vector3 velocity = _playerRigidbody.velocity;
             Enums.MovementState currentState = Enums.MovementState.Idle;
-            
+
             if (IsValueInLimit(velocity.y))
             {
                 currentState = Enums.MovementState.Jump;
             }
-            else if (RotationAxis != 0f) 
+            else if (RotationAxis != 0f)
             {
                 currentState = Enums.MovementState.Rotate;
             }
@@ -71,45 +124,21 @@ namespace TestShooter.Player
             {
                 currentState = Enums.MovementState.Move;
             }
-            
+
             _hud.SetState(currentState);
         }
-
-        private void JumpPolishing()
+        
+        private void WeaponHandler()
         {
-            if (_playerRigidbody.velocity.y <= 0f)
+            if (Input.GetKey(KeyCode.Mouse0))
             {
-                _playerRigidbody.velocity += Vector3.up * Physics.gravity.y * _playerSettings.FallingForce * Time.deltaTime;
+                _weaponController.FastWeaponShoot();
+            }
+            
+            if (Input.GetKey(KeyCode.Mouse1))
+            {
+                _weaponController.HardWeaponShoot();
             }
         }
-
-        private void PlayerMovement()
-        {
-            float horizontal = Input.GetAxis("Horizontal");
-            float vertical = Input.GetAxis("Vertical");
-
-            Vector3 direction = _playerTransform.right * horizontal + _playerTransform.forward * vertical;
-            direction.Normalize();
-            _playerRigidbody.velocity = direction * _playerSettings.Speed * Time.deltaTime;
-
-            if (Mathf.Abs(horizontal) != 0f || Mathf.Abs(vertical) != 0f)
-            {
-                _hud.SetState(Enums.MovementState.Move);
-            }
-
-            if (IsLanded() && _isJumped)
-            {
-                _playerRigidbody.AddForce(Vector3.up * _playerSettings.JumpForce, ForceMode.Impulse);
-                _isJumped = false;
-            }
-        }
-
-        private void PlayerRotation()
-        {
-            float mouseX = RotationAxis * _playerSettings.MouseSensitivity * Time.deltaTime;
-            _playerTransform.Rotate(Vector3.up * mouseX);
-        }
-
-        private bool IsLanded() => Physics.Raycast(_playerTransform.position, Vector3.down, MaxLandDistance);
     }
 }

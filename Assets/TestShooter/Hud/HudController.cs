@@ -1,4 +1,4 @@
-﻿using TestShooter.Data;
+﻿using TestShooter.Player;
 using TMPro;
 using UnityEngine;
 
