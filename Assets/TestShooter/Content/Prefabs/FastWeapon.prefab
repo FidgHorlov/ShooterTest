@@ -198,9 +198,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 8493439114467205291}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 03375a32ebe940e0a4b1238ba19cec78, type: 3}
+  m_Script: {fileID: 11500000, guid: d04cd7c6afcf4e47a6525d015657feb5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _weaponSettings: {fileID: 11400000, guid: 2fd6c6d427bccbe4b981f32c7b40cd51, type: 2}
   _bulletPool:
   - {fileID: 6130212385717258333}
   - {fileID: 432170488759735412}

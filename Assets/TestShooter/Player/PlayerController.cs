@@ -22,10 +22,10 @@ namespace TestShooter.Player
         private const float BonusTime = 3f;
 
         [SerializeField] private WeaponController _weaponController;
-        [SerializeField] private HudController _hud;
         [SerializeField] private Rigidbody _playerRigidbody;
         [SerializeField] private PlayerSettings _playerSettings;
 
+        private HudController _hud;
         private PlayerMovement _playerMovement;
         private Transform _playerTransform;
         private bool _isJumped;
@@ -52,7 +52,7 @@ namespace TestShooter.Player
             _playerRigidbody.velocity = _playerMovement.GetVelocity(_playerTransform.right * horizontal, _playerTransform.forward * vertical, _currentSpeed);
             if (Mathf.Abs(horizontal) != 0f || Mathf.Abs(vertical) != 0f)
             {
-                _hud.SetState(Enums.MovementState.Move);
+                _hud.SetMovementState(Enums.MovementState.Move);
             }
             
             if (_playerRigidbody.velocity.y >= 0f)
@@ -63,6 +63,7 @@ namespace TestShooter.Player
             if (IsLanded() && _isJumped)
             {
                 _playerRigidbody.AddForce(Vector3.up * _currentJumpForce, ForceMode.Impulse);
+                _isJumped = false;
             } 
         }
 
@@ -81,6 +82,11 @@ namespace TestShooter.Player
         {
             HudStateWriting();
             WeaponHandler();
+        }
+        
+        public void Init(HudController hudController)
+        {
+            _hud = hudController;
         }
 
         public void BoostDamage()
@@ -125,7 +131,7 @@ namespace TestShooter.Player
                 currentState = Enums.MovementState.Move;
             }
 
-            _hud.SetState(currentState);
+            _hud.SetMovementState(currentState);
         }
         
         private void WeaponHandler()

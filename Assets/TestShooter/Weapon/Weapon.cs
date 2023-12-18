@@ -6,6 +6,8 @@ namespace TestShooter.Weapon
 {
     public class Weapon : MonoBehaviour
     {
+        private const float DamageIncrease = 1.2f;
+        
         [SerializeField] private WeaponSettings _weaponSettings;
         [SerializeField] private Bullet[] _bulletPool;
 
@@ -28,26 +30,22 @@ namespace TestShooter.Weapon
             }
         }
 
-        public void SetActive(bool isActive)
+        internal void SetActive(bool isActive)
         {
             _currentGameObject.SetActive(isActive);
         }
 
-        public void StopShooting()
-        {
-            _bulletCount = 0;
-            foreach (Bullet bullet in _bulletPool)
-            {
-                bullet.BulletReset();
-            }
-        }
-
-        public void Shooting()
+        internal void Shooting()
         {
             if (IsShootPossible())
             {
                 Shoot();
             }
+        }
+        
+        internal void IncreaseDamage()
+        {
+            _bulletDamage *= _bulletDamage;
         }
 
         private void InitWeaponSettings()
@@ -71,6 +69,15 @@ namespace TestShooter.Weapon
             _bulletPool[_bulletCount].Shoot();
             _bulletCount++;
             _timeFromLastShot = DateTime.Now;
+        }
+        
+        private void StopShooting()
+        {
+            _bulletCount = 0;
+            foreach (Bullet bullet in _bulletPool)
+            {
+                bullet.BulletReset();
+            }
         }
 
         private bool IsShootPossible() => (DateTime.Now - _timeFromLastShot).TotalSeconds > _weaponSpeed;

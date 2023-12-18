@@ -8,7 +8,7 @@ namespace TestShooter.Hud
     {
         [SerializeField] private TextMeshProUGUI _movementState;
 
-        public void SetState(Enums.MovementState movementState)
+        public void SetMovementState(Enums.MovementState movementState)
         {
             _movementState.text = movementState.ToString();
             _movementState.color = Enums.MovementStatesDictionary[movementState];

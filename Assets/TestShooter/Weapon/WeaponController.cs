@@ -23,7 +23,7 @@ namespace TestShooter.Weapon
                 ShowWeapon(WeaponType.Fast);
             }
 
-            _currentWeapon.Weapon.Shooting();
+            _currentWeapon.Shoot();
         }
 
         public void HardWeaponShoot()
@@ -33,7 +33,12 @@ namespace TestShooter.Weapon
                 ShowWeapon(WeaponType.Hard);
             }
 
-            _currentWeapon.Weapon.Shooting();
+            _currentWeapon.Shoot();
+        }
+        
+        public void IncreaseDamage()
+        {
+            _currentWeapon.IncreaseDamage();
         }
 
         private void ShowWeapon(WeaponType weaponType)
