@@ -91,15 +91,15 @@ namespace TestShooter.Player
 
         public void BoostDamage()
         {
-            
+            _weaponController.IncreaseDamage();
         }
 
-        public void BoostMovement()
+        public void BoostMovement(float bonusTime)
         {
             _currentJumpForce *= BonusIncreaseValue;
             _currentSpeed *= BonusIncreaseValue;
             _currentJumpFall *= BonusIncreaseValue;
-            Invoke(nameof(RestoreDefaultMovement), BonusTime);
+            Invoke(nameof(RestoreDefaultMovement), bonusTime);
         }
 
         private void RestoreDefaultMovement()
