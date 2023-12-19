@@ -35,7 +35,6 @@ namespace TestShooter.Elevator
         [ContextMenu("Open door")]
         internal void OpenDoor()
         {
-            Debug.Log($"Door is opened (maybe) -> {name}");
             DOTween.Kill(_leftDoor);
             DOTween.Kill(_rightDoor);
             _leftDoor.DOLocalRotateQuaternion(Quaternion.Euler(_leftDoorOpened), DoorMovementTime).SetId(_leftDoor);
@@ -45,7 +44,6 @@ namespace TestShooter.Elevator
         [ContextMenu("Close door")]
         internal void CloseDoor()
         {
-            Debug.Log($"Door is closed (maybe) -> {name}");
             DOTween.Kill(_leftDoor);
             DOTween.Kill(_rightDoor);
             _leftDoor.DOLocalRotateQuaternion(Quaternion.Euler(_leftDoorClosed), DoorMovementTime);

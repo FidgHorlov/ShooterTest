@@ -59,10 +59,8 @@ namespace TestShooter.Elevator
 
         private void LocalMoveY(float poseY, Action callback)
         {
-            Debug.Log($"Move elevator to the -> {poseY}");
             _elevator.DOLocalMoveY(poseY, ElevateTime).OnComplete(() =>
             {
-                Debug.Log($"End of movement");
                 _isElevatorOnTop = !_isElevatorOnTop;
                 callback?.Invoke();
             });
