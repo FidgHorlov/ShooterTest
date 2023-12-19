@@ -1,19 +1,19 @@
 ﻿using System;
 using UnityEngine;
 
-namespace TestShooter.Elevator
+namespace TestShooter.Utilities
 {
     [RequireComponent(typeof(Collider))]
-    public class ElevatorPlatform : MonoBehaviour
+    public class TriggerPlayerEventReceiver : MonoBehaviour
     {
         private const string PlayerTag = "Player";
-        public event Action TriggerEvent;
+        public event Action<GameObject> TriggerEnter;
 
         private void OnTriggerEnter(Collider other)
         {
             if (other.CompareTag(PlayerTag))
             {
-                TriggerEvent?.Invoke();
+                TriggerEnter?.Invoke(other.gameObject);
             }
         }
     }

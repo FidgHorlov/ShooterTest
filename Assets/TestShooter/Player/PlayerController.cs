@@ -33,6 +33,7 @@ namespace TestShooter.Player
         private float _currentJumpForce;
         private float _currentJumpFall;
 
+        public bool IsMovementDisabled { private get; set; }
         private float RotationAxis => Input.GetAxis("Mouse X");
 
         private void Awake()
@@ -46,6 +47,11 @@ namespace TestShooter.Player
 
         private void FixedUpdate()
         {
+            if (IsMovementDisabled)
+            {
+                return;
+            }
+            
             float horizontal = Input.GetAxis("Horizontal");
             float vertical = Input.GetAxis("Vertical");
 
@@ -69,6 +75,11 @@ namespace TestShooter.Player
 
         private void Update()
         {
+            if (IsMovementDisabled)
+            {
+                return;
+            }
+            
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 _isJumped = true;

@@ -651,7 +651,7 @@ MonoBehaviour:
   _playerRigidbody: {fileID: 6308404800680678618}
   _playerSettings:
     Speed: 500
-    JumpForce: 100
+    JumpForce: 150
     MouseSensitivity: 100
     FallingForce: 20
 --- !u!114 &372266109827370424
