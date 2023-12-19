@@ -651,7 +651,7 @@ MonoBehaviour:
   _playerRigidbody: {fileID: 6308404800680678618}
   _playerSettings:
     Speed: 500
-    JumpForce: 1000
+    JumpForce: 100
     MouseSensitivity: 100
     FallingForce: 20
 --- !u!114 &372266109827370424
@@ -681,7 +681,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6868323236998754868}
   serializedVersion: 4
-  m_Mass: 10
+  m_Mass: 1
   m_Drag: 0
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -942,6 +942,10 @@ PrefabInstance:
       propertyPath: _speed
       value: 50
       objectReference: {fileID: 0}
+    - target: {fileID: 422591695741310864, guid: 676646561b0bac14b9ca3fd3cf6faff6, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.104
+      objectReference: {fileID: 0}
     - target: {fileID: 516901137930661920, guid: 676646561b0bac14b9ca3fd3cf6faff6, type: 3}
       propertyPath: _speed
       value: 50
@@ -1045,6 +1049,14 @@ PrefabInstance:
     - target: {fileID: 6542998078139296604, guid: 676646561b0bac14b9ca3fd3cf6faff6, type: 3}
       propertyPath: _speed
       value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 6822051566615067693, guid: 676646561b0bac14b9ca3fd3cf6faff6, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.20400003
+      objectReference: {fileID: 0}
+    - target: {fileID: 6822051566615067693, guid: 676646561b0bac14b9ca3fd3cf6faff6, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.00000001862645
       objectReference: {fileID: 0}
     - target: {fileID: 6845413381737306684, guid: 676646561b0bac14b9ca3fd3cf6faff6, type: 3}
       propertyPath: _speed
@@ -1485,6 +1497,10 @@ PrefabInstance:
       propertyPath: _speed
       value: 35
       objectReference: {fileID: 0}
+    - target: {fileID: 4242257379208113101, guid: cbef4125ea161914f8dd735d66d349c5, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.231
+      objectReference: {fileID: 0}
     - target: {fileID: 4933418711881465293, guid: cbef4125ea161914f8dd735d66d349c5, type: 3}
       propertyPath: _speed
       value: 35
@@ -1500,6 +1516,14 @@ PrefabInstance:
     - target: {fileID: 5198594307416793181, guid: cbef4125ea161914f8dd735d66d349c5, type: 3}
       propertyPath: _speed
       value: 35
+      objectReference: {fileID: 0}
+    - target: {fileID: 5200243315728104244, guid: cbef4125ea161914f8dd735d66d349c5, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.13099998
+      objectReference: {fileID: 0}
+    - target: {fileID: 5200243315728104244, guid: cbef4125ea161914f8dd735d66d349c5, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.00000001862645
       objectReference: {fileID: 0}
     - target: {fileID: 5446773882889900103, guid: cbef4125ea161914f8dd735d66d349c5, type: 3}
       propertyPath: _speed
