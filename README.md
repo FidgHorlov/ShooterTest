@@ -1,4 +1,4 @@
-# CorPower VR (CPO VR - Game)
+# Shooter - test task
 ![Screenshot](GameScreenshot.png)
 
 ### Info
