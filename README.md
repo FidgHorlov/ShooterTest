@@ -2,7 +2,8 @@
 ![Screenshot](GameScreenshot.png)
 
 ### Info
-Current project created in Unity 2022.3.2f1
+The current project created in Unity 2022.3.2f1
+
 [Download here](https://github.com/FidgHorlov/ShooterTest/releases/tag/Release)
 
 ### Useful information
