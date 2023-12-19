@@ -7,9 +7,11 @@ namespace TestShooter.Hud
     public class HudController : MonoBehaviour
     {
         private const float TimeBeforeHideBonus = 4f;
+        private const float TimeBeforeHideAlert = 4f;
         
         [SerializeField] private TextMeshProUGUI _movementState;
         [SerializeField] private BonusHud _bonusHud;
+        [SerializeField] private GameObject _alertQuit;
 
         private void Awake()
         {
@@ -27,6 +29,17 @@ namespace TestShooter.Hud
             _bonusHud.SetBonusName(bonusName);
             _bonusHud.SetActive(true);
             Invoke(nameof(HideBonus), TimeBeforeHideBonus);
+        }
+
+        public void ShowQuitAlert()
+        {
+            _alertQuit.SetActive(true);
+            Invoke(nameof(HideQuitAlert), TimeBeforeHideAlert);
+        }
+        
+        public void HideQuitAlert()
+        {
+            _alertQuit.SetActive(false);
         }
 
         private void HideBonus()
