@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 
-namespace TestShooter.Data
+namespace TestShooter.Player
 {
     public static class Enums
     {

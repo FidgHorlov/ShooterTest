@@ -1,4 +1,4 @@
-﻿using TestShooter.Data;
+﻿using TestShooter.Player;
 using TMPro;
 using UnityEngine;
 
@@ -6,12 +6,46 @@ namespace TestShooter.Hud
 {
     public class HudController : MonoBehaviour
     {
+        private const float TimeBeforeHideBonus = 4f;
+        
         [SerializeField] private TextMeshProUGUI _movementState;
+        [SerializeField] private BonusHud _bonusHud;
 
-        public void SetState(Enums.MovementState movementState)
+        private void Awake()
+        {
+            _bonusHud.SetActiveImmediately(false);
+        }
+
+        public void SetMovementState(Enums.MovementState movementState)
         {
             _movementState.text = movementState.ToString();
             _movementState.color = Enums.MovementStatesDictionary[movementState];
         }
+
+        public void ShowBonus(string bonusName)
+        {
+            _bonusHud.SetBonusName(bonusName);
+            _bonusHud.SetActive(true);
+            Invoke(nameof(HideBonus), TimeBeforeHideBonus);
+        }
+
+        private void HideBonus()
+        {
+            _bonusHud.SetActive(false);
+        }
+
+#if UNITY_EDITOR
+        [ContextMenu("Show Bonus")]
+        private void ShowBonusUi()
+        {
+            ShowBonus("Temp bonus");
+        }
+        
+        [ContextMenu("Hide bonus")]
+        private void HideBonusUi()
+        {
+            ShowBonus("Temp bonus");
+        }
+#endif
     }
 }
