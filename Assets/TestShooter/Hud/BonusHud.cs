@@ -17,10 +17,11 @@ namespace TestShooter.Hud
         private Vector3 _bonusDefaultPosition;
         private float _targetBonusHeight;
 
+        private Transform BonusTransform => _bonusTransform ??= _bonusGameObject.transform;
+
         private void Awake()
         {
-            _bonusTransform = _bonusGameObject.transform;
-            _bonusDefaultPosition = _bonusTransform.localPosition;
+            _bonusDefaultPosition = BonusTransform.localPosition;
             _targetBonusHeight = _bonusDefaultPosition.y + ShowBonusHeight;
         }
 
@@ -38,7 +39,7 @@ namespace TestShooter.Hud
                 targetPosition.y = _targetBonusHeight;
             }
 
-            _bonusTransform.localPosition = targetPosition;
+            BonusTransform.localPosition = targetPosition;
         }
 
         public void SetActive(bool isActive)
@@ -46,11 +47,11 @@ namespace TestShooter.Hud
             if (isActive)
             {
                 _bonusGameObject.SetActive(true);
-                _bonusTransform.localPosition = _bonusDefaultPosition;
+                BonusTransform.localPosition = _bonusDefaultPosition;
             }
 
             float targetPositionY = isActive ? _targetBonusHeight : _bonusDefaultPosition.y;
-            _bonusTransform.DOLocalMoveY(targetPositionY, isActive ? ShowBonusAnimationDuration : HideBonusAnimationDuration)
+            BonusTransform.DOLocalMoveY(targetPositionY, isActive ? ShowBonusAnimationDuration : HideBonusAnimationDuration)
                 .OnComplete(() =>
                 {
                     if (!isActive)
