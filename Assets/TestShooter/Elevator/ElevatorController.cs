@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using DG.Tweening;
+using TestShooter.Utilities;
 using UnityEngine;
 
 namespace TestShooter.Elevator
@@ -14,7 +15,8 @@ namespace TestShooter.Elevator
 
         [SerializeField] private ElevatorDoors _frontDoor;
         [SerializeField] private ElevatorDoors _rearDoor;
-        [SerializeField] private ElevatorPlatform _elevatorPlatform;
+        [SerializeField] private TriggerPlayerEventReceiver _platformEventReceiver;
+        [SerializeField] private TriggerPlayerEventReceiver _callElevatorEventReceiver;
         [SerializeField] private Transform _elevator;
 
         private bool _isElevatorOnTop;
@@ -23,24 +25,34 @@ namespace TestShooter.Elevator
         {
             _frontDoor.DoorMovementTime = DoorMovementTime;
             _rearDoor.DoorMovementTime = DoorMovementTime;
+            
+            _callElevatorEventReceiver.gameObject.SetActive(false);
         }
 
         private void OnEnable()
         {
-            _elevatorPlatform.TriggerEvent += PlayerOnPlatform;
+            _platformEventReceiver.TriggerEnter += PlayerOnPlatform;
+            _callElevatorEventReceiver.TriggerEnter += CallElevatorDown;
         }
 
         private void OnDisable()
         {
-            _elevatorPlatform.TriggerEvent -= PlayerOnPlatform;
+            _platformEventReceiver.TriggerEnter -= PlayerOnPlatform;
+            _callElevatorEventReceiver.TriggerEnter -= CallElevatorDown;
         }
 
         [ContextMenu("Elevate")]
-        private void PlayerOnPlatform()
+        private void PlayerOnPlatform(GameObject playerGameObject)
         {
             StopCoroutine(nameof(ElevatorDown));
             StopCoroutine(nameof(ElevatorUp));
             StartCoroutine(_isElevatorOnTop ? nameof(ElevatorDown) : nameof(ElevatorUp));
+        }
+
+        private void CallElevatorDown(GameObject playerGameObject)
+        {
+            StartCoroutine(nameof(ElevatorDown));
+            _callElevatorEventReceiver.gameObject.SetActive(false);
         }
 
         private IEnumerator ElevatorUp()
@@ -48,6 +60,8 @@ namespace TestShooter.Elevator
             _frontDoor.CloseDoor();
             yield return new WaitForSeconds(DoorMovementTime);
             LocalMoveY(TopPoseY, () => _rearDoor.OpenDoor());
+            
+            _callElevatorEventReceiver.gameObject.SetActive(true);
         }
 
         private IEnumerator ElevatorDown()
